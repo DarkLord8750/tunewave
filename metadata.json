@@ -1,0 +1,8 @@
+{
+  "name": "TuneWave",
+  "description": "A premium production-ready music streaming app powered by YouTube API.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
