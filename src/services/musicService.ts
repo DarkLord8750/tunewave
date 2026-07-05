@@ -1,8 +1,6 @@
 import { Track } from '../types';
 import { mockTracks } from './mockData';
 
-
-
 const searchCache = new Map<string, Track[]>();
 
 export function cleanMetadata(text: string): string {
@@ -19,11 +17,13 @@ export function cleanMetadata(text: string): string {
 
 export const musicService = {
   async search(query: string, signal?: AbortSignal): Promise<Track[]> {
+    const DEFAULT_LIMIT = 20;
+
     try {
-      const searchRes = await fetch(`/api/search?q=${encodeURIComponent(query)}`, { signal });
+      const searchRes = await fetch(`/api/search?q=${encodeURIComponent(query)}&limit=${DEFAULT_LIMIT}`, { signal });
       if (!searchRes.ok) throw new Error('Search failed');
       const searchData = await searchRes.json();
-      
+
       return searchData.map((item: any) => ({
         ...item,
         duration: item.duration || '0:00'
@@ -31,7 +31,9 @@ export const musicService = {
     } catch (error: any) {
       if (error.name === 'AbortError') throw error;
       console.error(error);
-      return mockTracks.filter(t => t.title.toLowerCase().includes(query.toLowerCase()) || t.artist.toLowerCase().includes(query.toLowerCase()));
+      return mockTracks
+        .filter(t => t.title.toLowerCase().includes(query.toLowerCase()) || t.artist.toLowerCase().includes(query.toLowerCase()))
+        .slice(0, DEFAULT_LIMIT);
     }
   },
 
